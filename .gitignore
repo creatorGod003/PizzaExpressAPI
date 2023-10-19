@@ -1,0 +1,22 @@
+# Compiled Python files
+__pycache__/
+*.pyc
+
+# Virtual environment
+env/
+
+# Editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables file
+.env
+
+# Logs
+*.log
+
+# Cache files
+__pycache__/
+.cached/
