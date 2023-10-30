@@ -183,6 +183,10 @@ async def update_order(id:int, order:OrderModel , Authorize:AuthJWT=Depends()):
     for user_order in current_user.orders:
         if(user_order.id == id):
             current_order = session.query(Order).filter(Order.id == user_order.id).first()
+            if(current_order.order_status != 'PENDING'):
+                session.commit()
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order details cannot be changed when order is in transit")
+                
             current_order.quantity = order.quantity
             current_order.pizza_size = order.pizza_size
             session.commit()
