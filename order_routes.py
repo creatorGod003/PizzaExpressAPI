@@ -231,6 +231,8 @@ async def update_order_status(id:int, order:OrderStatusModel, Authorize: AuthJWT
     # checking if subject is staff or not. If so change the order status else raise 403 error
     if(current_user_obj.is_staff):
         requested_order = session.query(Order).filter(Order.id == id).first()
+        if(requested_order.order_status == 'DELIVERED'):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Order has already been delivered")
         requested_order.order_status = order.order_status
         session.commit()
         response = {
