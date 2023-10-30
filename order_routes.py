@@ -185,7 +185,7 @@ async def update_order(id:int, order:OrderModel , Authorize:AuthJWT=Depends()):
             current_order = session.query(Order).filter(Order.id == user_order.id).first()
             if(current_order.order_status != 'PENDING'):
                 session.commit()
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order details cannot be changed when order is in transit")
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Order details cannot be changed when order is in transit")
                 
             current_order.quantity = order.quantity
             current_order.pizza_size = order.pizza_size
@@ -272,6 +272,8 @@ async def delete_order(id:int, Authorize:AuthJWT=Depends()):
     for placed_order in current_user.orders:
         
         if(placed_order.id == id):
+            if(placed_order.status!='PENDING'):
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Order cannot be deleted")
             session.query(Order).filter(Order.id == id).delete(synchronize_session='fetch')
             session.commit()
             return {"message": "Order deleted successfully"}
